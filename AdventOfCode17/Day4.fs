@@ -15,8 +15,20 @@
         if d = arr.Length then acc + 1
         else acc
 
+    let checkAnagram(acc, arr: string []) =
+        let sorted =
+            arr
+            |> Array.map (fun s -> s |> Seq.sort |> String.Concat)
+        valid(acc, sorted)
+
     let answer =
         let ans = 
             input 
             |> List.fold (fun acc x -> valid(acc, x)) 0
+        ans
+
+    let answer2 = 
+        let ans = 
+            input 
+            |> List.fold (fun acc x -> checkAnagram(acc, x)) 0
         ans
