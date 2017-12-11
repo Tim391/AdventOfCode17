@@ -9,20 +9,14 @@
         |> File.ReadAllLines
         |> Array.map (fun l -> (l.Split(null)))
 
-    type Register = {
-        name: string
-        value: int
-    }
-
-    let registers : (string * int) [] = [||]
-
     let apply orig cmd value =
         match cmd with
         | "inc" -> orig + value
         | "dec" -> orig - value
         | _ -> orig
 
-    let createInstruction(line: string[]) =
+
+    let createInstruction(registers: (string * int)[], line: string[]) =
         let reg = line.[0]
         let cmd = line.[1]
         let value = line.[2] |> int
@@ -30,18 +24,23 @@
         let cond = line.[5]
         let condVal = line.[6] |> int
 
-        let condRegValue = 
+        let condRegOption = 
             registers
             |> Array.tryFind (fun (r, _) -> r = condReg)
+            
+        let condRegValue = 
+            match condRegOption with
+            | Some (_, v) -> v
+            | None -> 0
         
         let modifyReg =
             match cond with
-            | ">" -> match condRegValue with | Some (r, v) -> v > condVal | None -> false
-            | "<" -> match condRegValue with | Some (r, v) -> v < condVal | None -> false
-            | ">=" -> match condRegValue with | Some (r, v) -> v >= condVal | None -> false
-            | "==" -> match condRegValue with | Some (r, v) -> v = condVal | None -> false
-            | "<=" -> match condRegValue with | Some (r, v) -> v <= condVal | None -> false
-            | "!=" -> match condRegValue with | Some (r, v) -> v <> condVal | None -> false
+            | ">" -> condRegValue > condVal 
+            | "<" -> condRegValue < condVal
+            | ">=" -> condRegValue >= condVal
+            | "==" -> condRegValue = condVal
+            | "<=" -> condRegValue <= condVal
+            | "!=" -> condRegValue <> condVal
             | _ -> false      
 
         if modifyReg then 
@@ -53,12 +52,14 @@
                 let (er, ev) = registers.[v]
                 registers.[v] <- (er, apply ev cmd value)
                 registers
-            //| None -> (reg, apply 0 cmd value)::registers
+            | None -> 
+                Array.append registers [|(reg, apply 0 cmd value)|]
         else registers
 
 
     let answer =
-        let ins = 
+        let max = 
             input
-            |> Array.map (createInstruction)
-        ins
+            |> Array.fold (fun acc l -> createInstruction(acc, l)) [||]
+            |> Array.maxBy (fun (r, v) -> v)
+        max
