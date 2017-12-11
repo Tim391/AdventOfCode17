@@ -56,10 +56,19 @@
                 Array.append registers [|(reg, apply 0 cmd value)|]
         else registers
 
+    let processmax =
+        1
+
 
     let answer =
-        let max = 
+        let (reg, processMax) = 
             input
-            |> Array.fold (fun acc l -> createInstruction(acc, l)) [||]
-            |> Array.maxBy (fun (r, v) -> v)
-        max
+            |> Array.fold (fun (r, pm) l -> 
+                let registers = createInstruction(r, l)
+                let (r, maxSoFar) = 
+                    registers
+                    |> Array.maxBy (fun (r, v) -> v)
+                (registers, if maxSoFar > pm then maxSoFar else pm)   
+                ) ([||], 0)
+        let maxReg = reg |> Array.maxBy (fun (r, v) -> v)
+        (maxReg, processMax)
