@@ -5,7 +5,7 @@
 
 [<EntryPoint>]
 let main argv = 
-    let answer = Day8.answer
+    let answer = Day10.answer
     printfn "%A" answer
     Console.ReadLine() |> ignore
     0 // return an integer exit code
