@@ -55,6 +55,7 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="Day12.fs" />
     <Compile Include="Day11.fs" />
     <Compile Include="Day10.fs" />
     <Compile Include="Day9.fs" />
@@ -78,6 +79,7 @@
     <Content Include="Day9Input.txt" />
     <Content Include="Day10Input.txt" />
     <Content Include="Day11Input.txt" />
+    <Content Include="Day12Input.txt" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
