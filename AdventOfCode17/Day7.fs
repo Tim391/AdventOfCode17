@@ -31,12 +31,18 @@
             |> List.exists (fun (_, _, children) -> children |> List.contains name)
         not b
 
-    //let rec private calculateWeight(weight, node, nodes) =
-    //    let (_, w, children) = node
-    //    let childrensWeight =
-    //        children 
-    //        |> List.fold (fun acc c -> calculateWeight(acc, c, nodes)) 0
-    //    weight + w + childrensWeight
+    let private getNode name nodes =
+        nodes
+        |> List.find (fun (n, _, _) -> n = name)
+
+    let rec private calculateWeight(weight: int, node: (string * int * string list), nodes: (string * int * string list) list) =
+        let (_, w, children) = node
+        let childrensWeight =
+            children 
+            |> List.fold (fun acc c -> 
+                let n = getNode c nodes
+                calculateWeight(acc, n, nodes)) 0
+        weight + w + childrensWeight
 
     let answer =
         let nodes = 
@@ -48,4 +54,11 @@
             |> List.find (fun n -> isBase(n, nodes))
         let (name, _, _) = findBase
         name
+
+    let answer2 =
+        let nodes = 
+            input
+            |> Array.map createNode
+            |> Array.toList
+        nodes
 
